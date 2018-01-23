@@ -505,6 +505,8 @@ float projectionMatrix[16];
 float clipScale[3];
 float clipOffset[3];
 
+bool notex;
+
 static GLenum SetupRenderer(unsigned int primitiveType, unsigned int vertexFormat) {
   unsigned int texCount = ((vertexFormat & 0xF00) >> 8);
   GLsizei stride = 4 * 4 + 4 + 4 + texCount * 8;
@@ -553,7 +555,7 @@ static GLenum SetupRenderer(unsigned int primitiveType, unsigned int vertexForma
 
 #if 1
   // Hack to disable texture if tex0 is used - doesn't work?!
-  if (texCount == 0) {
+  if ((texCount == 0) || notex) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);
@@ -3049,6 +3051,7 @@ HACKY_COM_BEGIN(IDirect3DDevice3, 40)
   switch(stack[3]) {
   case API(D3DTSS_COLOROP):
     assert((stack[4] == API(D3DTOP_DISABLE)) || (stack[4] == API(D3DTOP_SELECTARG1)) || (stack[4] == API(D3DTOP_SELECTARG2)) || (stack[4] == API(D3DTOP_MODULATE)));
+    notex = (stack[4] == API(D3DTOP_DISABLE)) || ((stack[4] == API(D3DTOP_SELECTARG2)));
     break;
   case API(D3DTSS_COLORARG1):
     assert(stack[4] == API(D3DTA_TEXTURE));
