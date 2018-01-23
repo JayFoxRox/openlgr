@@ -33,6 +33,116 @@ static SDL_Window* sdlWindow;
 #include "com/ddraw.h"
 #include "com/dinput.h"
 
+
+struct {
+  uint32_t dik;
+  SDL_Scancode sdl_scancode;
+} keyboardMap[] = {
+  { API(DIK_ESCAPE),         SDL_SCANCODE_ESCAPE },
+  { API(DIK_1),              SDL_SCANCODE_1 },
+  { API(DIK_2),              SDL_SCANCODE_2 },
+  { API(DIK_3),              SDL_SCANCODE_3 },
+  { API(DIK_4),              SDL_SCANCODE_4 },
+  { API(DIK_5),              SDL_SCANCODE_5 },
+  { API(DIK_6),              SDL_SCANCODE_6 },
+  { API(DIK_7),              SDL_SCANCODE_7 },
+  { API(DIK_8),              SDL_SCANCODE_8 },
+  { API(DIK_9),              SDL_SCANCODE_9 },
+  { API(DIK_0),              SDL_SCANCODE_0 },
+  { API(DIK_MINUS),          SDL_SCANCODE_MINUS },    /* - on main keyboard */
+  { API(DIK_EQUALS),         SDL_SCANCODE_EQUALS },
+  { API(DIK_BACK),           SDL_SCANCODE_BACKSPACE },    /* backspace */
+  { API(DIK_TAB),            SDL_SCANCODE_TAB },
+  { API(DIK_Q),              SDL_SCANCODE_Q },
+  { API(DIK_W),              SDL_SCANCODE_W },
+  { API(DIK_E),              SDL_SCANCODE_E },
+  { API(DIK_R),              SDL_SCANCODE_R },
+  { API(DIK_T),              SDL_SCANCODE_T },
+  { API(DIK_Y),              SDL_SCANCODE_Y },
+  { API(DIK_U),              SDL_SCANCODE_U },
+  { API(DIK_I),              SDL_SCANCODE_I },
+  { API(DIK_O),              SDL_SCANCODE_O },
+  { API(DIK_P),              SDL_SCANCODE_P },
+  { API(DIK_LBRACKET),       SDL_SCANCODE_LEFTBRACKET },
+  { API(DIK_RBRACKET),       SDL_SCANCODE_RIGHTBRACKET },
+  { API(DIK_RETURN),         SDL_SCANCODE_RETURN },    /* Enter on main keyboard */
+  { API(DIK_LCONTROL),       SDL_SCANCODE_LCTRL },
+  { API(DIK_A),              SDL_SCANCODE_A },
+  { API(DIK_S),              SDL_SCANCODE_S },
+  { API(DIK_D),              SDL_SCANCODE_D },
+  { API(DIK_F),              SDL_SCANCODE_F },
+  { API(DIK_G),              SDL_SCANCODE_G },
+  { API(DIK_H),              SDL_SCANCODE_H },
+  { API(DIK_J),              SDL_SCANCODE_J },
+  { API(DIK_K),              SDL_SCANCODE_K },
+  { API(DIK_L),              SDL_SCANCODE_L },
+  { API(DIK_SEMICOLON),      SDL_SCANCODE_SEMICOLON },
+  { API(DIK_APOSTROPHE),     SDL_SCANCODE_APOSTROPHE },
+  { API(DIK_GRAVE),          SDL_SCANCODE_GRAVE },    /* accent grave */
+  { API(DIK_LSHIFT),         SDL_SCANCODE_LSHIFT },
+  { API(DIK_BACKSLASH),      SDL_SCANCODE_BACKSLASH },
+  { API(DIK_Z),              SDL_SCANCODE_Z },
+  { API(DIK_X),              SDL_SCANCODE_X },
+  { API(DIK_C),              SDL_SCANCODE_C },
+  { API(DIK_V),              SDL_SCANCODE_V },
+  { API(DIK_B),              SDL_SCANCODE_B },
+  { API(DIK_N),              SDL_SCANCODE_N },
+  { API(DIK_M),              SDL_SCANCODE_M },
+  { API(DIK_COMMA),          SDL_SCANCODE_COMMA },
+  { API(DIK_PERIOD),         SDL_SCANCODE_PERIOD },    /* . on main keyboard */
+  { API(DIK_SLASH),          SDL_SCANCODE_SLASH },    /* / on main keyboard */
+  { API(DIK_RSHIFT),         SDL_SCANCODE_RSHIFT },
+  { API(DIK_MULTIPLY),       SDL_SCANCODE_KP_MULTIPLY },    /* * on numeric keypad */
+  { API(DIK_LMENU),          SDL_SCANCODE_LALT },    /* left Alt */
+  { API(DIK_SPACE),          SDL_SCANCODE_SPACE },
+  { API(DIK_CAPITAL),        SDL_SCANCODE_CAPSLOCK },
+  { API(DIK_F1),             SDL_SCANCODE_F1 },
+  { API(DIK_F2),             SDL_SCANCODE_F2 },
+  { API(DIK_F3),             SDL_SCANCODE_F3 },
+  { API(DIK_F4),             SDL_SCANCODE_F4 },
+  { API(DIK_F5),             SDL_SCANCODE_F5 },
+  { API(DIK_F6),             SDL_SCANCODE_F6 },
+  { API(DIK_F7),             SDL_SCANCODE_F7 },
+  { API(DIK_F8),             SDL_SCANCODE_F8 },
+  { API(DIK_F9),             SDL_SCANCODE_F9 },
+  { API(DIK_F10),            SDL_SCANCODE_F10 },
+  { API(DIK_NUMLOCK),        SDL_SCANCODE_NUMLOCKCLEAR },
+  { API(DIK_SCROLL),         SDL_SCANCODE_SCROLLLOCK },    /* Scroll Lock */
+  { API(DIK_NUMPAD7),        SDL_SCANCODE_KP_7 },
+  { API(DIK_NUMPAD8),        SDL_SCANCODE_KP_8 },
+  { API(DIK_NUMPAD9),        SDL_SCANCODE_KP_9 },
+  { API(DIK_SUBTRACT),       SDL_SCANCODE_KP_MINUS },    /* - on numeric keypad */
+  { API(DIK_NUMPAD4),        SDL_SCANCODE_KP_4 },
+  { API(DIK_NUMPAD5),        SDL_SCANCODE_KP_5 },
+  { API(DIK_NUMPAD6),        SDL_SCANCODE_KP_6 },
+  { API(DIK_ADD),            SDL_SCANCODE_KP_PLUS },    /* + on numeric keypad */
+  { API(DIK_NUMPAD1),        SDL_SCANCODE_KP_1 },
+  { API(DIK_NUMPAD2),        SDL_SCANCODE_KP_2 },
+  { API(DIK_NUMPAD3),        SDL_SCANCODE_KP_3 },
+  { API(DIK_NUMPAD0),        SDL_SCANCODE_KP_0 },
+  { API(DIK_DECIMAL),        SDL_SCANCODE_KP_DECIMAL },    /* . on numeric keypad */
+  { API(DIK_OEM_102),        SDL_SCANCODE_NONUSBACKSLASH },    /* < > | on UK/Germany keyboards */
+  { API(DIK_F11),            SDL_SCANCODE_F11 },
+  { API(DIK_F12),            SDL_SCANCODE_F12 },
+
+  { API(DIK_DIVIDE),         SDL_SCANCODE_KP_DIVIDE },    /* / on numeric keypad */
+
+  { API(DIK_RMENU),          SDL_SCANCODE_RALT },    /* right Alt */
+  { API(DIK_PAUSE),          SDL_SCANCODE_PAUSE },    /* Pause */
+  { API(DIK_HOME),           SDL_SCANCODE_HOME },    /* Home on arrow keypad */
+  { API(DIK_UP),             SDL_SCANCODE_UP },    /* UpArrow on arrow keypad */
+  { API(DIK_PRIOR),          SDL_SCANCODE_PAGEUP },    /* PgUp on arrow keypad */
+  { API(DIK_LEFT),           SDL_SCANCODE_LEFT },    /* LeftArrow on arrow keypad */
+  { API(DIK_RIGHT),          SDL_SCANCODE_RIGHT },    /* RightArrow on arrow keypad */
+  { API(DIK_END),            SDL_SCANCODE_END },    /* End on arrow keypad */
+  { API(DIK_DOWN),           SDL_SCANCODE_DOWN },    /* DownArrow on arrow keypad */
+  { API(DIK_NEXT),           SDL_SCANCODE_PAGEDOWN },    /* PgDn on arrow keypad */
+  { API(DIK_INSERT),         SDL_SCANCODE_INSERT },    /* Insert on arrow keypad */
+  { API(DIK_DELETE),         SDL_SCANCODE_DELETE },    /* Delete on arrow keypad */
+  { API(DIK_LWIN),           SDL_SCANCODE_LGUI },    /* Left Windows key */
+  { API(DIK_RWIN),           SDL_SCANCODE_RGUI }    /* Right Windows key */
+};
+
 uint32_t callId = 0;
 
 typedef struct {
@@ -3234,14 +3344,40 @@ HACKY_COM_END()
 // IDirectInputDeviceA -> STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKA,LPVOID,DWORD) PURE; // 4
 HACKY_COM_BEGIN(IDirectInputDeviceA, 4)
   hacky_printf("p 0x%" PRIX32 "\n", stack[1]);
-  hacky_printf("a 0x%" PRIX32 "\n", stack[2]);
-  hacky_printf("b 0x%" PRIX32 "\n", stack[3]);
-  hacky_printf("c 0x%" PRIX32 "\n", stack[4]);
-
-  //FIXME: Call some callbacks?
+  uint32_t a = stack[2];
+  uint32_t b = stack[3];
+  uint32_t c = stack[4];
+  hacky_printf("a 0x%" PRIX32 "\n", a);
+  hacky_printf("b 0x%" PRIX32 "\n", b);
+  hacky_printf("c 0x%" PRIX32 "\n", c);
 
   eax = 0; // FIXME: No idea what this expects to return..
   esp += 4 * 4;
+  
+  esp -= 4;
+  *(uint32_t*)Memory(esp) = returnAddress;
+
+  for(unsigned int i = 0; i < ARRAY_SIZE(keyboardMap); i++) {
+
+    Address instAddress = Allocate(sizeof(API(DIDEVICEOBJECTINSTANCE)));
+    API(DIDEVICEOBJECTINSTANCE)* inst = (API(DIDEVICEOBJECTINSTANCE)*)Memory(instAddress);
+    memset(inst, 0x00, sizeof(API(DIDEVICEOBJECTINSTANCE)));
+    inst->dwSize = sizeof(API(DIDEVICEOBJECTINSTANCE));
+    inst->dwOfs = keyboardMap[i].dik;
+    inst->dwType = 0x0000000C; // DIDFT_BUTTON
+    sprintf(inst->tszName, "%s", SDL_GetScancodeName(keyboardMap[i].sdl_scancode));
+  
+    esp -= 4;
+    *(uint32_t*)Memory(esp) = b; // user pointer
+    esp -= 4;
+    *(uint32_t*)Memory(esp) = instAddress; // API(DIDEVICEOBJECTINSTANCE)*
+
+    // Emulate a call by setting return address to where we want to go.
+    esp -= 4;
+    *(uint32_t*)Memory(esp) = (i == 0) ? clearEax : a; // Return to clear eax
+  }
+
+  eip = a;
 HACKY_COM_END()
 
 // IDirectInputDeviceA -> STDMETHOD(SetProperty)(THIS_ REFGUID,LPCDIPROPHEADER) PURE; // 6
@@ -3276,13 +3412,9 @@ void UpdateKeyboardState() {
   const uint8_t pressed = 0x80; // This is the only requirement for pressed keys
   const uint8_t unpressed = 0x00;
   memset(keyboardState, 0x00, 256);
-  keyboardState[API(DIK_ESCAPE)] = sdlState[SDL_SCANCODE_ESCAPE] ? pressed : unpressed;
-  keyboardState[API(DIK_RETURN)] = sdlState[SDL_SCANCODE_RETURN] ? pressed : unpressed;
-  keyboardState[API(DIK_SPACE)] = sdlState[SDL_SCANCODE_SPACE] ? pressed : unpressed;
-  keyboardState[API(DIK_UP)] = sdlState[SDL_SCANCODE_UP] ? pressed : unpressed;
-  keyboardState[API(DIK_DOWN)] = sdlState[SDL_SCANCODE_DOWN] ? pressed : unpressed;
-  keyboardState[API(DIK_LEFT)] = sdlState[SDL_SCANCODE_LEFT] ? pressed : unpressed;
-  keyboardState[API(DIK_RIGHT)] = sdlState[SDL_SCANCODE_RIGHT] ? pressed : unpressed;
+  for(unsigned int i = 0; i < ARRAY_SIZE(keyboardMap); i++) {
+    keyboardState[keyboardMap[i].dik] = sdlState[keyboardMap[i].sdl_scancode] ? pressed : unpressed;
+  }
 }
 
 // IDirectInputDeviceA -> STDMETHOD(GetDeviceState)(THIS_ DWORD,LPVOID) PURE; // 9
@@ -3317,13 +3449,14 @@ HACKY_COM_BEGIN(IDirectInputDeviceA, 10)
   *count = 0;
   unsigned int objectSize = stack[2];
   assert(objectSize == sizeof(API(DIDEVICEOBJECTDATA)));
-  for(unsigned int i = 0; i < 256; i++) {
-    if (keyboardState[i] != previousState[i]) {
+  for(unsigned int i = 0; i < ARRAY_SIZE(keyboardMap); i++) {
+    uint32_t dik = keyboardMap[i].dik;
+    if (keyboardState[dik] != previousState[dik]) {
       if (*count < max_count) {
         API(DIDEVICEOBJECTDATA) objectData;
         memset(&objectData, 0x00, sizeof(objectData));
-        objectData.dwOfs = i;
-        objectData.dwData = keyboardState[i];
+        objectData.dwOfs = dik;
+        objectData.dwData = keyboardState[dik];
         printf("Adding %d: %d\n", objectData.dwOfs, objectData.dwData);
         memcpy(Memory(stack[3] + *count * objectSize), &objectData, objectSize);
         *count = *count + 1;

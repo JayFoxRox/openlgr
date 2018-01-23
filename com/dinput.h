@@ -49,6 +49,25 @@ typedef struct {
 #endif
 } API(DIDEVICEOBJECTDATA);
 
+typedef struct { 
+  API(DWORD) dwSize; 
+  API(GUID)  guidType; 
+  API(DWORD) dwOfs; 
+  API(DWORD) dwType; 
+  API(DWORD) dwFlags; 
+  char tszName[API(MAX_PATH)]; // TCHAR
+  API(DWORD) dwFFMaxForce; 
+  API(DWORD) dwFFForceResolution; 
+  API(WORD) wCollectionNumber;
+  API(WORD) wDesignatorIndex;
+  API(WORD) wUsagePage;
+  API(WORD) wUsage;
+  API(DWORD) dwDimension;
+  API(WORD) wExponent;
+  API(WORD) wReserved;
+} API(DIDEVICEOBJECTINSTANCE);
+ 
+
 
 // From Microsoft DX6 SDK headers
 
