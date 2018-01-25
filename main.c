@@ -3862,12 +3862,32 @@ HACKY_IMPORT_BEGIN(strchr)
   esp += 0 * 4; // cdecl
 HACKY_IMPORT_END()
 
+HACKY_IMPORT_BEGIN(strstr)
+  hacky_printf("str 0x%" PRIX32 " (%s)\n", stack[1], Memory(stack[1]));
+  hacky_printf("strSearch 0x%" PRIX32 " (%s)\n", stack[2], Memory(stack[2]));
+  char* s = Memory(stack[1]);
+  char* r = strstr(s, Memory(stack[2]));
+  if (r == NULL) {
+    eax = 0;
+  } else {
+    eax = stack[1] + (r - s);
+  }
+  esp += 0 * 4; // cdecl
+HACKY_IMPORT_END()
+
+
 HACKY_IMPORT_BEGIN(strncat)
   hacky_printf("strDest 0x%" PRIX32 " (%.*s)\n", stack[1], stack[3], Memory(stack[1]));
   hacky_printf("strSource 0x%" PRIX32 " (%.*s)\n", stack[2], stack[3]-strlen(Memory(stack[1])), Memory(stack[2]));
   hacky_printf("count %" PRIu32 "\n", stack[3]);
   strncat(Memory(stack[1]),Memory(stack[2]),stack[3]);
   eax = stack[1];
+  esp += 0 * 4; // cdecl
+HACKY_IMPORT_END()
+
+HACKY_IMPORT_BEGIN(atoi)
+  hacky_printf("str 0x%" PRIX32 " (%s)\n", stack[1], Memory(stack[1]));
+  eax = atoi(Memory(stack[1]));
   esp += 0 * 4; // cdecl
 HACKY_IMPORT_END()
 
@@ -4310,9 +4330,77 @@ HACKY_IMPORT_BEGIN(DirectSoundCreate)
   hacky_printf("lpGuid 0x%" PRIX32 "\n", stack[1]);
   hacky_printf("ppDS 0x%" PRIX32 "\n", stack[2]);
   hacky_printf("pUnkOuter 0x%" PRIX32 "\n", stack[3]);
-  eax = -1; // FIXME: this is not "DSERR_NODRIVER" but should be?
+  *(Address*)Memory(stack[2]) = CreateInterface("IDirectSound", 200);
+  eax = 0;
   esp += 3 * 4;
 HACKY_IMPORT_END()
+
+// IDirectSound -> STDMETHOD_(ULONG,Release)       (THIS) PURE; //2
+HACKY_COM_BEGIN(IDirectSound, 2)
+  hacky_printf("p 0x%" PRIX32 "\n", stack[1]);
+  eax = 0; // FIXME: No idea what this expects to return..
+  esp += 1 * 4;
+HACKY_COM_END()
+
+// IDirectSound -> STDMETHOD(CreateSoundBuffer)    (THIS_ LPCDSBUFFERDESC, LPDIRECTSOUNDBUFFER *, LPUNKNOWN) PURE; // 3
+HACKY_COM_BEGIN(IDirectSound, 3)
+  hacky_printf("p 0x%" PRIX32 "\n", stack[1]);
+  hacky_printf("a 0x%" PRIX32 "\n", stack[2]);
+  hacky_printf("b 0x%" PRIX32 "\n", stack[3]);
+  hacky_printf("c 0x%" PRIX32 "\n", stack[4]);
+  *(Address*)Memory(stack[3]) = CreateInterface("IDirectSoundBuffer", 200);
+  eax = 0; // FIXME: No idea what this expects to return..
+  esp += 4 * 4;
+HACKY_COM_END()
+
+// IDirectSound -> STDMETHOD(SetCooperativeLevel)  (THIS_ HWND, DWORD) PURE; // 6
+HACKY_COM_BEGIN(IDirectSound, 6)
+  hacky_printf("p 0x%" PRIX32 "\n", stack[1]);
+  hacky_printf("a 0x%" PRIX32 "\n", stack[2]);
+  hacky_printf("b 0x%" PRIX32 "\n", stack[3]);
+  eax = 0; // FIXME: No idea what this expects to return..
+  esp += 3 * 4;
+HACKY_COM_END()
+
+
+
+
+// IDirectSoundBuffer -> STDMETHOD(GetCaps)              (THIS_ LPDSBCAPS) PURE; // 3
+HACKY_COM_BEGIN(IDirectSoundBuffer, 3)
+  hacky_printf("p 0x%" PRIX32 "\n", stack[1]);
+  hacky_printf("a 0x%" PRIX32 "\n", stack[2]);
+  eax = 0; // FIXME: No idea what this expects to return..
+  esp += 2 * 4;
+HACKY_COM_END()
+
+// IDirectSoundBuffer -> STDMETHOD(Play)                 (THIS_ DWORD, DWORD, DWORD) PURE; // 12
+HACKY_COM_BEGIN(IDirectSoundBuffer, 12)
+  hacky_printf("p 0x%" PRIX32 "\n", stack[1]);
+  hacky_printf("a 0x%" PRIX32 "\n", stack[2]);
+  hacky_printf("b 0x%" PRIX32 "\n", stack[3]);
+  hacky_printf("c 0x%" PRIX32 "\n", stack[4]);
+  eax = 0; // FIXME: No idea what this expects to return..
+  esp += 4 * 4;
+HACKY_COM_END()
+
+// IDirectSoundBuffer -> STDMETHOD(SetFormat)            (THIS_ LPCWAVEFORMATEX) PURE; // 14
+HACKY_COM_BEGIN(IDirectSoundBuffer, 14)
+  hacky_printf("p 0x%" PRIX32 "\n", stack[1]);
+  hacky_printf("a 0x%" PRIX32 "\n", stack[2]);
+  eax = 0; // FIXME: No idea what this expects to return..
+  esp += 2 * 4;
+HACKY_COM_END()
+
+
+
+
+
+
+HACKY_IMPORT_BEGIN(GetActiveWindow)
+  eax = 333; // HWND = same as in CreateWindow
+  esp += 0 * 4;
+HACKY_IMPORT_END()
+
 
 HACKY_IMPORT_BEGIN(ReleaseMutex)
   hacky_printf("hMutex 0x%" PRIX32 "\n", stack[1]);
@@ -4328,6 +4416,18 @@ HACKY_IMPORT_BEGIN(strncmp)
   hacky_printf("string2 0x%" PRIX32 "\n", stack[2]);
   hacky_printf("count %" PRIu32 "\n", stack[3]);
   eax = (int32_t)strncmp(Memory(stack[1]),Memory(stack[2]),stack[3]); //  INT diff
+  esp += 0 * 4;
+HACKY_IMPORT_END()
+
+HACKY_IMPORT_BEGIN(_stricmp)
+  hacky_printf("string1 0x%" PRIX32 " (%.*s)\n", stack[1],stack[3],Memory(stack[1]));
+  hacky_printf("string2 0x%" PRIX32 " (%.*s)\n", stack[2],stack[3],Memory(stack[2]));
+  hacky_printf("count %" PRIu32 "\n", stack[3]);
+#ifdef WIN32
+  eax = (int32_t)stricmp(Memory(stack[1]),Memory(stack[2])); //  INT diff
+#else
+  eax = (int32_t)strcasecmp(Memory(stack[1]),Memory(stack[2])); //  INT diff
+#endif
   esp += 0 * 4;
 HACKY_IMPORT_END()
 
@@ -4665,7 +4765,7 @@ Exe* LoadExe(const char* path, Exe** p_exe) {
           Address x = Allocate(4);
           Address dataAddress = Allocate(4);
           Address s = Allocate(128);
-          strcpy(Memory(s),"LEGORacers.exe -window -novideo");
+          strcpy(Memory(s),"LEGORacers.exe -horzres 800 -vertres 600 -window -novideo");
           *(Address*)Memory(x) = s;
           *(Address*)Memory(dataAddress) = x;
           *symbolAddress = x;
